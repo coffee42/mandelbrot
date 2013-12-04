@@ -9,7 +9,9 @@ Simple desktop application for playing with Mandelbrot Set implemented in JAVA.
 ## How to run it ##
 
     ant run
+
 or
+
     java -jar mandelbrot.jar
 
 ## Controls ##
