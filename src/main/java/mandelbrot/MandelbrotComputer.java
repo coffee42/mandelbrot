@@ -2,11 +2,6 @@ package mandelbrot;
 
 import java.awt.Color;
 import java.awt.Rectangle;
-import java.util.Arrays;
-import java.util.stream.IntStream;
-import java.util.stream.Stream;
-
-import org.apache.commons.math3.complex.Complex;
 
 public class MandelbrotComputer implements Computer {
 
