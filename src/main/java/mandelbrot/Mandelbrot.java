@@ -1,11 +1,9 @@
 package mandelbrot;
 
 import java.awt.Container;
-import java.awt.Dimension;
 
 import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
+import javax.swing.SwingUtilities;
 
 import net.miginfocom.swing.MigLayout;
 
@@ -17,8 +15,15 @@ public class Mandelbrot extends JFrame{
 
 	private Mandelbrot() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		initLayout();
-		pack();
+		try {
+			SwingUtilities.invokeAndWait(() -> {
+				initLayout();
+				pack();
+			});
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
 	}
 	
 	private void initLayout() {
@@ -29,18 +34,15 @@ public class Mandelbrot extends JFrame{
 		Computer computer = new MandelbrotComputer();
 		control = new ControlPanel();
 		control.setComputer(computer);
-		computer.setPlotter(plotter);
 		control.setPlotter(plotter);
 		container.add(plotter);
 		container.add(control);
-		
-				
+		control.startComputation();
 	}
 	
 	public static void main(String[] args) {
 		Mandelbrot mandelbrot = new Mandelbrot();
 		mandelbrot.setVisible(true);		
-
 	}
 
 }

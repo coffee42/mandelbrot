@@ -16,16 +16,16 @@ import javax.swing.JPanel;
  * 
  */
 public class Plotter extends JPanel {
-	
-	public static final Dimension DIMENSION = new Dimension(600,600);
-	
+
+	public static final Dimension DIMENSION = new Dimension(600, 600);
+
 	private BufferedImage bufferedImage;
 	// pixel array from bufferedImage
 	private int[] pixels;
 	private MouseListener mouseListener;
 	private Rectangle selection;
 	private Computer computer;
-    
+
 	public Plotter() {
 		setSize(DIMENSION);
 		setMaximumSize(DIMENSION);
@@ -36,17 +36,18 @@ public class Plotter extends JPanel {
 		mouseListener = new MouseListener();
 		addMouseListener(mouseListener);
 		addMouseMotionListener(mouseListener);
-    initPixels();
+		initPixels();
 	}
-	
+
 	/**
 	 * Set Computer reference
+	 * 
 	 * @param computer
 	 */
 	public void setComputer(Computer computer) {
 		this.computer = computer;
 	}
-	
+
 	/**
 	 * Init all pixels to white color.
 	 */
@@ -55,77 +56,84 @@ public class Plotter extends JPanel {
 			pixels[i] = 0xFFFFFF;
 		}
 	}
-	
+
 	@Override
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		Graphics2D g2 = (Graphics2D) g;
 		int x = getWidth();
 		int y = getHeight();
-		g2.drawImage(bufferedImage, 0, 0, x, y, null);		
-		if (selection != null) {	
+		g2.drawImage(bufferedImage, 0, 0, x, y, null);
+		if (selection != null) {
 			g2.setColor(Color.white);
 			g2.draw(selection);
 		}
 		g2.dispose();
 	}
-	
+
 	/**
 	 * Used by Computer to draw set
-	 * @param newImage colored mandelBrotSet in pixels
+	 * 
+	 * @param newImage
+	 *            colored mandelBrotSet in pixels
 	 */
 	public void update(int[] newImage) {
 		System.arraycopy(newImage, 0, pixels, 0, pixels.length);
 		repaint();
 	}
-	
+
 	@Override
 	public int getHeight() {
 		return DIMENSION.height;
 	}
-	
+
 	@Override
 	public int getWidth() {
 		return DIMENSION.width;
 	}
 	
+	private void refresh() {
+		int[] pixels = computer.compute();
+		update(pixels);
+	}
+
 	class MouseListener extends MouseAdapter {
-		
-		int x1, y1, x2, y2;
+
+		int startX, startY, stopX, stopY;
 
 		@Override
 		public void mouseClicked(MouseEvent e) {
-			System.out.println(e.getButton());
-			if (e.getButton() == MouseEvent.BUTTON3)
-			computer.reset();
-			computer.compute();					
+			if (e.getButton() == MouseEvent.BUTTON3) {
+				computer.reset();
+			}		
+			refresh();
 		}
 
 		@Override
 		// start points of zoom selection
 		public void mousePressed(MouseEvent e) {
-    	 x1 = e.getX();
-			 y1 = e.getY();			
+			startX = e.getX();
+			startY = e.getY();
 		}
 
 		@Override
 		// selection done
 		public void mouseReleased(MouseEvent e) {
-		  computer.setZoom(selection);			  
-	  }
-		
+			computer.setZoom(selection);
+			int width = Math.abs(startX - stopX);
+			int height = Math.abs(startY - stopY);
+			int x = Math.min(startX, stopX);
+			int y = Math.min(startY, stopY);
+			selection = new Rectangle(x, y, width, height);
+			repaint();
+		}
+
 		@Override
 		// update selection and paint it.
 		public void mouseDragged(MouseEvent e) {
-			x2 = e.getX();
-			y2 = e.getY();
-			int width = Math.abs(x1 - x2); 
-		  int height = Math.abs(y1 - y2);
-		  int x = Math.min(x1, x2);
-		  int y = Math.min(y1, y2);
-			selection = new Rectangle(x, y, width, height); 
-			repaint();
+			stopX = e.getX();
+			stopY = e.getY();			
 		}
 	}
-	
+
 }

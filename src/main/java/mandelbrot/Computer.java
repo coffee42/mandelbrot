@@ -5,10 +5,8 @@ import java.awt.Rectangle;
 
 public interface Computer {
 
-	public void compute();
-	
-	public void setPlotter(Plotter plotter);
-	
+	public int[] compute();
+		
 	public void setPalete(Color[] palete);
 	
 	public void setZoom(Rectangle rect);

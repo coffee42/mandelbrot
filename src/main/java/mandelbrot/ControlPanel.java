@@ -1,18 +1,11 @@
 package mandelbrot;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
-
-import org.omg.CORBA.portable.ValueBase;
 
 import net.miginfocom.swing.MigLayout;
 
@@ -30,42 +23,28 @@ public class ControlPanel extends JPanel {
 		
 		spIterations = new JSpinner();
 		SpinnerNumberModel spnm = new SpinnerNumberModel();
-		spnm.setMaximum(MandelbrotComputer.ITERATIONS*2);
+		spnm.setMaximum(MandelbrotComputer.ITERATIONS * 2);
 		spnm.setMinimum(1);
 		spnm.setStepSize(1);
 		spnm.setValue(MandelbrotComputer.ITERATIONS);
 		
 		spIterations.setModel(spnm);
-		spIterations.addChangeListener(new ChangeListener() {
-			
-			@Override
-			public void stateChanged(ChangeEvent e) {
-				setIterNumber();							
-			}
-		});
+		spIterations.addChangeListener((e) -> setIterNumber());
 		add(new JLabel("Iterations:"));
 		add(spIterations, "wrap, align right, grow, aligny center");
 				
 		startButton = new JButton("Draw");
 		add(startButton, "grow");
-		startButton.addActionListener(new ActionListener() {
-			
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				startComputation();				
-			}
-		});
+		startButton.addActionListener((e) -> startComputation());				
 		
 		resetButton = new JButton("Reset");
 		add(resetButton, "grow");
-		resetButton.addActionListener(new ActionListener() {
-			
-			@Override
-			public void actionPerformed(ActionEvent e) {
+		resetButton.addActionListener((e) -> 
+		 	{
 				computer.reset();
 				computer.compute();				
-			}
-		});
+			});
+
 		setBorder(BorderFactory.createEtchedBorder());
 	}
 	
@@ -77,11 +56,11 @@ public class ControlPanel extends JPanel {
 		this.plotter = plotter;
 		plotter.setComputer(computer);
 	}
-	
-	
-	private void startComputation() {
+		
+	public void startComputation() {
 		if (computer != null && plotter != null) {
-		   computer.compute();	
+		   int[] pixels = computer.compute();
+		   plotter.update(pixels); 
 		}
 	}
 	
