@@ -4,15 +4,12 @@ Simple desktop application for playing with Mandelbrot Set implemented in JAVA.
 
 ## How to compile ##
 
-    ant dist
+    gradle installDist
 
 ## How to run it ##
 
-    ant run
-
-or
-
-    java -jar mandelbrot.jar
+    cd build/install/mandelbrot/bin/
+    ./mandelbrot
 
 ## Controls ##
 
